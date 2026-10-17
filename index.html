@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doosra Jeevan | दूसरा जीवन — NOTTO Blockchain Registry Prototype</title>
+  <meta name="description" content="Simulated blockchain-based national organ transplant registry prototype under THOA framework.">
+  <link rel="stylesheet" href="/styles.css">
+  
+  <!-- Leaflet CDN for Geo-Spatial Organ Transport Tracking -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="gov-theme">
+  <!-- ══════════════════════════════════════════════
+       PRELOADER OVERLAY (MULTI-LAYER NEURAL & CONSENSUS LOADING)
+       ══════════════════════════════════════════════ -->
+  <div id="preloader">
+    <div class="preloader-inner">
+      <!-- Official Doosra Jeevan Brand Logo with Neural Halo -->
+      <div style="display: flex; justify-content: center; margin-bottom: 0.8rem; position: relative;">
+        <div class="preloader-neural-halo"></div>
+        <img src="/doosra-jeevan-logo.svg" alt="Doosra Jeevan Official Logo" style="width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 8px 24px rgba(0,48,135,0.15)); position: relative; z-index: 2;" />
+      </div>
+      <h1 class="preloader-namaste-hi">नमस्ते</h1>
+      <div class="preloader-namaste-en">Namaste</div>
+      <p class="preloader-subtitle">दूसरा जीवन !! राष्ट्रीय अंग प्रत्यारोपण एवं इंट्राक्रैनियल रजिस्ट्री पोर्टल</p>
+      
+      <!-- Multi-Layer Loading Progress Readout -->
+      <div class="preloader-stage-box">
+        <div class="preloader-stage-dot"></div>
+        <div id="preloaderStageText" class="preloader-stage-text">Initializing Intracranial &amp; Neural Telemetry...</div>
+        <div id="preloaderPercent" class="preloader-percent">0%</div>
+      </div>
+
+      <div class="preloader-bar-wrap">
+        <div id="preloaderBar" class="preloader-bar"></div>
+      </div>
+
+      <!-- Telemetry Sub-indicators -->
+      <div class="preloader-nodes-row">
+        <span class="preloader-node-item active" id="pNode1">● ICP Telemetry</span>
+        <span class="preloader-node-item" id="pNode2">● 9-Node BFT</span>
+        <span class="preloader-node-item" id="pNode3">● Neuro-ICU Link</span>
+        <span class="preloader-node-item" id="pNode4">● Organ Twin</span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div class="preloader-prototype-badge">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> THOA Statutory Prototype
+        </div>
+        <button type="button" class="preloader-skip-btn" onclick="window.app &amp;&amp; window.app.skipPreloader()">
+          Skip to Home Screen ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       1. UTILITY ACCESSIBILITY BAR (GOV.IN)
+       ══════════════════════════════════════════════ -->
+  <header class="gov-utility-bar" id="govUtilityBar">
+    <div class="utility-left">
+      <a href="#mainContent" class="utility-link" id="btnSkipMain">Skip to Main Content</a>
+      <span class="utility-sep">|</span>
+      <button type="button" class="utility-link" id="btnLangHi" onclick="window.app && window.app.showToast('पोर्टल भाषा: हिन्दी एवं अंग्रेजी दोनों में उपलब्ध', 'info')">हिन्दी</button>
+      <span class="utility-sep">|</span>
+      <button type="button" class="utility-link" id="btnLangEn" onclick="window.app && window.app.showToast('Portal language: English & Hindi active', 'info')">English</button>
+      <span class="utility-sep">|</span>
+      <div class="font-controls" aria-label="Font size adjustment">
+        <button type="button" class="font-btn" id="btnFontDec" onclick="window.app && window.app.fontDecrease()" title="Decrease font size">A-</button>
+        <button type="button" class="font-btn" id="btnFontReset" onclick="window.app && window.app.fontReset()" title="Reset font size">A</button>
+        <button type="button" class="font-btn" id="btnFontInc" onclick="window.app && window.app.fontIncrease()" title="Increase font size">A+</button>
+      </div>
+      <span class="utility-sep">|</span>
+      <button type="button" class="utility-link" id="btnScreenReader" onclick="window.app && window.app.showToast('Screen reader mode: Optimized for accessibility (WCAG 2.1 AA)', 'info')">Screen Reader Access</button>
+    </div>
+    <div class="utility-right">
+      <button type="button" class="utility-reset-btn" id="btnUtilityResetDb" onclick="window.app && window.app.confirmResetDatabase()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 2px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.65-5.65"/></svg> Reset Database (87 Candidates / 10 Organs)
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       2. TRICOLOR STRIP
+       ══════════════════════════════════════════════ -->
+  <div class="tricolor-strip" role="presentation">
+    <div class="saffron"></div>
+    <div class="white"></div>
+    <div class="green"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       3. GOVERNMENT PORTAL HEADER
+       ══════════════════════════════════════════════ -->
+  <div class="gov-header" id="govHeader">
+    <!-- Portal Identity with Official Doosra Jeevan Logo -->
+    <div class="gov-portal-identity" style="display: flex; align-items: center; gap: 0.9rem;">
+      <div class="portal-logo-container" style="width: 52px; height: 52px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 3px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+        <img src="/doosra-jeevan-icon.svg" alt="Doosra Jeevan Logo Emblem" style="width: 100%; height: 100%; object-fit: contain;" />
+      </div>
+      <div style="text-align: left;">
+        <div class="portal-title-hi" style="display: flex; align-items: baseline; gap: 4px;">
+          <span>दूसरा जीवन</span>
+          <span style="color: #138808; font-weight: 800; font-size: 1.2rem;">!!</span>
+        </div>
+        <div class="portal-title-en" style="color: #FF9933; font-weight: 800; letter-spacing: 1px;">DOOSRA JEEVAN !!</div>
+        <div class="portal-tagline">NOTTO · ROTTO · SOTTO 10-अंग राष्ट्रीय ब्लॉकचेन रजिस्ट्री</div>
+      </div>
+    </div>
+
+    <!-- System Status & Role Switch -->
+    <div class="gov-system-status">
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end;">
+        <span class="notto-badge" id="headerNottoBadge">
+          <span>♥</span> 9-Organ Multi-Sig Registry
+        </span>
+        <span class="header-block-info" id="headerBlockDisplay">Block #14,901 · 9-Node Consensus Active</span>
+        <button type="button" class="header-switch-btn" id="btnHeaderRoleToggle" onclick="window.app && window.app.toggleRole()">
+          <span id="headerRoleToggleText">Switch to Patient Portal ↔</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       4. APP SHELL & SIDEBAR NAVIGATION
+       ══════════════════════════════════════════════ -->
+  <div class="app-shell" id="appShell">
+    <!-- Backdrop for mobile drawer toggle -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="window.app && window.app.toggleMobileSidebar(false)"></div>
+
+    <!-- SIDEBAR (LEFT NAVIGATION MENU) -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-top-group">
+        <!-- Sidebar Brand with Official Logo -->
+        <div class="sidebar-brand">
+          <div class="brand-icon-box" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <img src="/doosra-jeevan-icon.svg" alt="Doosra Jeevan Logo" style="width: 100%; height: 100%; object-fit: contain;" />
+          </div>
+          <div style="flex: 1;">
+            <div class="brand-title-en" style="font-size: 0.92rem; font-weight: 800; color: #0f172a; letter-spacing: 0.5px;">DOOSRA JEEVAN !!</div>
+            <div class="brand-title-sub" style="font-size: 0.72rem; color: #16a34a; font-weight: 700;">राष्ट्रीय अंग प्रत्यारोपण</div>
+          </div>
+          <button type="button" class="sidebar-close-btn" id="btnSidebarClose" onclick="window.app && window.app.toggleMobileSidebar(false)" title="Close Menu" aria-label="Close menu">✕</button>
+        </div>
+
+        <!-- Section: Admin -->
+        <div class="sidebar-nav-section">
+          <div class="nav-section-title">ADMIN / प्रशासन</div>
+          <ul class="sidebar-nav-list">
+            <li>
+              <button type="button" class="nav-item-btn active" id="navHome" onclick="window.app && window.app.navigate('home')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Home · Intracranial Core (होम)</span>
+                <span class="live-tag" style="background:#059669; color:#fff; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:auto;">START</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navNeurologyDept" onclick="window.app && window.app.navigate('neurology-dept')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/></svg>
+                <span>Brain &amp; Neurology Dept (न्यूरोलॉजी)</span>
+                <span class="live-tag" style="background:#7c3aed; color:#fff; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:auto;">NEURO</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navDonorRegistration" onclick="window.app && window.app.navigate('donor-registration')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <span>Donor Registration (पंजीकरण)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navDashboard" onclick="window.app && window.app.navigate('dashboard')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Registry Dashboard (डैशबोर्ड)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navWaitlists" onclick="window.app && window.app.navigate('waitlists')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                <span>Organ Matching (प्रतीक्षा सूची)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navAnomalyScanner" onclick="window.app && window.app.navigate('anomaly-scanner')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/><path d="M12 8v3l2 2"/></svg>
+                <span>Anomaly Scanner (अखंडता स्कैनर)</span>
+                <span class="live-tag" style="background:#0284c7; color:#fff; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:auto;">9-NODE</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navChainCustody" onclick="window.app && window.app.navigate('chain-custody')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><circle cx="12" cy="14" r="2"/></svg>
+                <span>Organ AirTag & A2A (स्मार्ट कस्टडी)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navAiAgent" onclick="window.app && window.app.navigate('ai-agent')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01M9 3h6M9 21h6"/></svg>
+                <span>AI Agents Hub (एआई एजेंट्स)</span>
+                <span class="live-tag" style="background:#10b981; color:#fff; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:auto;">LIVE</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navDecisionLog" onclick="window.app && window.app.navigate('decision-log')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+                <span>Immutable Decision Log</span>
+              </button>
+            </li>
+            
+            <li>
+              <button type="button" class="nav-item-btn" id="navZkpVault" onclick="window.app && window.app.navigate('zkp-vault')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Zero-Knowledge Vault</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="nav-item-btn" id="navDonorHistory" onclick="window.app && window.app.navigate('donor-history')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Donor History (दाता इतिहास)</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section: Patient -->
+        <div class="sidebar-nav-section">
+          <div class="nav-section-title">MARIZ / PATIENT</div>
+          <ul class="sidebar-nav-list">
+            <li>
+              <button type="button" class="nav-item-btn" id="navConsumerPortal" onclick="window.app && window.app.navigate('consumer-portal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Patient Portal (मरीज़ पोर्टल)</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom controls in Sidebar -->
+      <div class="sidebar-bottom-group">
+        <!-- Reset Database Button in Sidebar -->
+        <button type="button" class="sidebar-reset-btn" id="btnSidebarResetDb" onclick="window.app && window.app.confirmResetDatabase()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          <span>Reset Database (87 Candidates)</span>
+        </button>
+
+        <!-- Access Node Indicator Card -->
+        <div class="sidebar-role-card" id="sidebarRoleCard">
+          <div class="role-card-label">Current Access Node / वर्तमान भूमिका</div>
+          <div class="role-badge-row">
+            <div class="role-pulse-dot" id="rolePulseDot"></div>
+            <div class="role-name-text" id="sidebarRoleName">NOTTO Apex Admin</div>
+          </div>
+          <button type="button" class="role-switch-btn" id="btnSidebarSwitchPerspective" onclick="window.app && window.app.toggleRole()">
+            Switch Perspective ↔
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="app-main" id="mainContent">
+      
+      <!-- STICKY TOP TICKER BAR -->
+      <div class="ticker-bar" id="tickerBar">
+        <div class="ticker-metrics">
+          <button type="button" class="mobile-menu-btn" id="btnMobileMenuToggle" onclick="window.app && window.app.toggleMobileSidebar()" aria-label="Toggle navigation menu">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+            <span>Menu / मेनू</span>
+          </button>
+          <div class="ticker-item">
+            <span class="ticker-label">Ledger Height</span>
+            <span class="ticker-val pulse-text" id="tickerLedgerHeight">#14,901 BLOCKS</span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-label">Consensus State</span>
+            <span class="ticker-val" id="tickerConsensusState">9-Node Multi-Sig: ACTIVE</span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-label">Active Registry</span>
+            <span class="ticker-val" id="tickerActiveCount">87 Patients · 9 Organs</span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-label">NOTTO Match Rule</span>
+            <span class="ticker-val" style="color: #7c3aed;">Rule 4B: 5-Hr Priority</span>
+          </div>
+        </div>
+        <div class="ticker-right">
+          <div class="network-sync-pill">
+            <div class="green-pulse-dot"></div>
+            <span>SOTTO Network: ONLINE</span>
+          </div>
+          <button type="button" class="sync-trigger-btn" id="btnRefreshSync" onclick="window.app && window.app.refreshNetworkState()" title="Simulate SOTTO ledger poll">
+            Sync Now
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW: HOME SCREEN (MULTI-LAYER INTRACRANIAL PROJECT & DUAL UI)
+           ══════════════════════════════════════════════ -->
+      <section id="view-home" class="view-container">
+        <!-- LAYER 1: ATMOSPHERIC CRANIAL NEURAL CANVAS & TOP BANNER -->
+        <div class="cranial-hero-wrapper">
+          <canvas id="cranialNeuralCanvas" class="cranial-neural-canvas"></canvas>
+          <div class="cranial-hero-content">
+            <div class="cranial-hero-kicker">
+              <span>National Health Authority · NOTTO Apex Telemetry</span>
+              <span aria-hidden="true">·</span>
+              <span>THOA Act 1994 / Rules 2014</span>
+              <span aria-hidden="true">·</span>
+              <span>Intracranial Protocol Core</span>
+            </div>
+            <h1 class="cranial-hero-title-hi">दूसरा जीवन : राष्ट्रीय इंट्राक्रैनियल एवं अंग आवंटन पोर्टल</h1>
+            <div class="cranial-hero-title-en">Doosra Jeevan — Intracranial Clinical Project &amp; Autonomous Organ Allocation</div>
+            <p class="cranial-hero-desc">
+              India's first multi-layer statutory bridge connecting <strong>Intracranial Brain-Stem Death (BSD) Neuro-ICU Diagnostics</strong> with the <strong>9-Node Decentralized Organ Allocation Blockchain</strong>. Powered by real-time Intracranial Pressure (ICP) telemetry, the mandatory 6-reflex clinical audit, and cryptographic multi-sig consensus.
+            </p>
+
+            <!-- Dual UI Selector & Hero Start Gateway -->
+            <div class="cranial-hero-action-bar">
+              <button type="button" class="btn-start-hero" id="btnHeroStartPlatform" onclick="window.app && window.app.startPlatform('waitlists')">
+                <span class="btn-start-pulse"></span>
+                <span class="btn-start-icon">🚀</span>
+                <span class="btn-start-label">
+                  <strong>START PLATFORM / शुरू करें</strong>
+                  <small>Launch Complete Organ Allocation System</small>
+                </span>
+                <span class="btn-start-arrow">➔</span>
+              </button>
+
+              <button type="button" class="btn-hero-dept-highlight" id="btnHeroBrainDept" onclick="window.app && window.app.navigate('neurology-dept')">
+                <span class="btn-dept-icon">🧠</span>
+                <span class="btn-dept-label">
+                  <strong>Brain &amp; Neurology Dept (अस्पताल न्यूरोलॉजी)</strong>
+                  <small>Neuro-ICU · ICP Telemetry · Form-8 BSD Board</small>
+                </span>
+                <span class="dept-live-pill">ACTIVE</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAYER 2: INTRACRANIAL CLINICAL PROJECT CORE -->
+        <div class="home-layer-section">
+          <div class="section-title-wrap">
+            <div class="section-badge-text">LAYER 2 · CLINICAL CORE</div>
+            <h2 class="section-main-title">Intracranial Brain Death Protocol &amp; Neuro-ICU Diagnostics</h2>
+            <p class="section-sub-title">Continuous physiologic telemetry monitoring intracranial hypertension, brainstem herniation, and statutory BSD criteria.</p>
+          </div>
+
+          <!-- Real-Time Intracranial Vitals Telemetry Grid -->
+          <div class="intracranial-vitals-grid">
+            <div class="icp-vital-card">
+              <div class="vital-card-top">
+                <span class="vital-card-label">Intracranial Pressure (ICP)</span>
+                <span class="vital-status-indicator pulse-green">● MONITORED</span>
+              </div>
+              <div class="vital-card-value" id="liveIcpVal">13.8 <span class="vital-unit">mmHg</span></div>
+              <div class="vital-card-wave">
+                <div class="waveform-svg-wrap">
+                  <svg viewBox="0 0 200 40" class="wave-svg">
+                    <path d="M0 20 L20 20 L25 5 L30 35 L35 15 L40 25 L45 20 L80 20 L85 5 L90 35 L95 15 L100 25 L105 20 L140 20 L145 5 L150 35 L155 15 L160 25 L165 20 L200 20" fill="none" stroke="#0284c7" stroke-width="2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="vital-card-meta">Normal: 5–15 mmHg · Critical Herniation &gt; 25 mmHg</div>
+            </div>
+
+            <div class="icp-vital-card">
+              <div class="vital-card-top">
+                <span class="vital-card-label">Cerebral Perfusion Pressure (CPP)</span>
+                <span class="vital-status-indicator text-emerald-600">● ADEQUATE</span>
+              </div>
+              <div class="vital-card-value" id="liveCppVal">78.6 <span class="vital-unit">mmHg</span></div>
+              <div class="vital-calc-formula">CPP = MAP (92.4) - ICP (13.8)</div>
+              <div class="vital-card-meta">Target: &gt; 60 mmHg (Brain Perfusion Threshold)</div>
+            </div>
+
+            <div class="icp-vital-card">
+              <div class="vital-card-top">
+                <span class="vital-card-label">Glasgow Coma Scale (GCS)</span>
+                <span class="vital-status-indicator text-rose-600">● COMA STATE</span>
+              </div>
+              <div class="vital-card-value text-rose-600" id="liveGcsVal">3 / 15</div>
+              <div class="vital-gcs-breakdown">Eye: E1 (None) · Verbal: V1 (None) · Motor: M1 (Flaccid)</div>
+              <div class="vital-card-meta">Prerequisite for THOA Brainstem Death Evaluation</div>
+            </div>
+
+            <div class="icp-vital-card">
+              <div class="vital-card-top">
+                <span class="vital-card-label">Transcranial Doppler / CTA</span>
+                <span class="vital-status-indicator text-amber-600">● ARREST CONFIRMED</span>
+              </div>
+              <div class="vital-card-value text-amber-600" style="font-size: 1.25rem;">Systolic Spikes</div>
+              <div class="vital-gcs-breakdown">Diastolic Flow Reversal / Oscillating Flow</div>
+              <div class="vital-card-meta">Ancillary Test: Zero Intracranial Cerebral Perfusion</div>
+            </div>
+          </div>
+
+          <!-- The 6 Mandatory Brainstem Reflexes Clinical Board -->
+          <div class="brainstem-reflex-board">
+            <div class="reflex-board-header">
+              <div>
+                <h3 class="reflex-board-title">THOA Mandatory 6 Brainstem Reflexes Matrix (मस्तिष्क स्तंभ प्रतिवर्त परीक्षा)</h3>
+                <p class="reflex-board-desc">Must be independently evaluated twice with at least a 6-hour interval by the statutory 4-doctor medical board.</p>
+              </div>
+              <button type="button" class="btn-audit-reflexes" onclick="window.app && window.app.simulateBrainstemAudit()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>Run Diagnostic Reflex Audit</span>
+              </button>
+            </div>
+
+            <div class="reflex-items-grid" id="reflexItemsGrid">
+              <!-- Reflex 1 -->
+              <div class="reflex-item-card">
+                <div class="reflex-header-row">
+                  <span class="reflex-num">01</span>
+                  <span class="reflex-name">Pupillary Light Reflex (CN II, III)</span>
+                  <span class="reflex-badge absent" id="refBadge1">ABSENT (FIXED &gt;4mm)</span>
+                </div>
+                <div class="reflex-detail">Bilateral pupils fixed, mid-dilated to widely dilated, non-reactive to direct and consensual bright focal illumination.</div>
+              </div>
+
+              <!-- Reflex 2 -->
+              <div class="reflex-item-card">
+                <div class="reflex-header-row">
+                  <span class="reflex-num">02</span>
+                  <span class="reflex-name">Corneal Reflex (CN V, VII)</span>
+                  <span class="reflex-badge absent" id="refBadge2">ABSENT</span>
+                </div>
+                <div class="reflex-detail">Complete absence of eyelid blink or facial muscle contraction upon bilateral cornea stimulation with sterile cotton wisp.</div>
+              </div>
+
+              <!-- Reflex 3 -->
+              <div class="reflex-item-card">
+                <div class="reflex-header-row">
+                  <span class="reflex-num">03</span>
+                  <span class="reflex-name">Oculocephalic Reflex / Doll's Eyes (CN III, VI, VIII)</span>
+                  <span class="reflex-badge absent" id="refBadge3">ABSENT</span>
+                </div>
+                <div class="reflex-detail">Eyes remain in fixed midline anatomical position with no compensatory ocular movement upon rapid passive cervical rotation.</div>
+              </div>
+
+              <!-- Reflex 4 -->
+              <div class="reflex-item-card">
+                <div class="reflex-header-row">
+                  <span class="reflex-num">04</span>
+                  <span class="reflex-name">Oculovestibular / Cold Caloric (CN III, VI, VIII)</span>
+                  <span class="reflex-badge absent" id="refBadge4">ABSENT</span>
+                </div>
+                <div class="reflex-detail">No tonic deviation or nystagmus of either eye observed after 50 mL ice-cold saline irrigation of external auditory canal.</div>
+              </div>
+
+              <!-- Reflex 5 -->
+              <div class="reflex-item-card">
+                <div class="reflex-header-row">
+                  <span class="reflex-num">05</span>
+                  <span class="reflex-name">Gag &amp; Tracheal Cough Reflex (CN IX, X)</span>
+                  <span class="reflex-badge absent" id="refBadge5">ABSENT</span>
+                </div>
+                <div class="reflex-detail">Zero pharyngeal or palatal movement upon posterior tongue stimulation; zero cough response upon deep endotracheal suctioning.</div>
+              </div>
+
+              <!-- Reflex 6 -->
+              <div class="reflex-item-card highlight">
+                <div class="reflex-header-row">
+                  <span class="reflex-num">06</span>
+                  <span class="reflex-name">Apnea Challenge Test (Medullary Center)</span>
+                  <span class="reflex-badge pass" id="refBadge6">PASSED (PaCO₂ ≥ 60)</span>
+                </div>
+                <div class="reflex-detail">10 min ventilator disconnection with 100% O₂ tracheal insufflation; no respiratory effort observed; PaCO₂ reached 64.2 mmHg (pH 7.21).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- THOA Statutory Form-8 Four-Doctor Certification Board -->
+          <div class="thoa-board-panel">
+            <div class="thoa-board-top">
+              <div>
+                <div class="thoa-board-sub">LEGAL COMPLIANCE · THOA 1994 (SECTION 3 &amp; RULE 5)</div>
+                <h3 class="thoa-board-title">Statutory Form-8 Brainstem Death Certification Board</h3>
+              </div>
+              <div class="thoa-cert-status" id="thoaCertStatusBadge">
+                <span class="status-pulse-dot"></span>
+                <span>SECOND CONFIRMATORY EXAM CERTIFIED (6-HR INTERVAL)</span>
+              </div>
+            </div>
+
+            <div class="doctors-grid">
+              <div class="doc-sign-card">
+                <div class="doc-role-tag">REGISTERED MEDICAL SUPERINTENDENT</div>
+                <div class="doc-name">Dr. V. K. Paul, MD, FAMS</div>
+                <div class="doc-dept">AIIMS Apex Administration &amp; Hospital In-Charge</div>
+                <div class="doc-sign-status">✔ Digitally Signed via e-Sign (ABHA)</div>
+                <div class="doc-sign-time">Timestamp: 08:30 IST · 24-Oct-2026</div>
+              </div>
+
+              <div class="doc-sign-card">
+                <div class="doc-role-tag">TREATING PHYSICIAN / INTENSIVIST</div>
+                <div class="doc-name">Dr. Rajesh Malhotra, MS</div>
+                <div class="doc-dept">Chief of Neuro-Trauma ICU &amp; Critical Care</div>
+                <div class="doc-sign-status">✔ Digitally Signed via e-Sign (ABHA)</div>
+                <div class="doc-sign-time">Timestamp: 08:35 IST · 24-Oct-2026</div>
+              </div>
+
+              <div class="doc-sign-card highlight-border">
+                <div class="doc-role-tag" style="color: #7c3aed;">INDEPENDENT NEUROLOGIST / NEUROSURGEON</div>
+                <div class="doc-name">Dr. Manjari Tripathi, DM (Neuro)</div>
+                <div class="doc-dept">Brain &amp; Neurology Department (Govt. Panel Nominee)</div>
+                <div class="doc-sign-status" style="color: #7c3aed;">✔ Certified Brainstem Reflex Failure</div>
+                <div class="doc-sign-time">Timestamp: 14:40 IST (2nd Exam)</div>
+              </div>
+
+              <div class="doc-sign-card">
+                <div class="doc-role-tag">INDEPENDENT SPECIALIST PHYSICIAN</div>
+                <div class="doc-name">Dr. Arvind Kumar, MCh</div>
+                <div class="doc-dept">Apex Independent Panel Member (SOTTO Approved)</div>
+                <div class="doc-sign-status">✔ Digitally Signed via e-Sign (ABHA)</div>
+                <div class="doc-sign-time">Timestamp: 14:45 IST (2nd Exam)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAYER 3: HOSPITAL DEPARTMENTS MATRIX & BRAIN/NEUROLOGY FOCUS -->
+        <div class="home-layer-section">
+          <div class="section-title-wrap">
+            <div class="section-badge-text">LAYER 3 · HOSPITAL ECOSYSTEM</div>
+            <h2 class="section-main-title">Hospital Department Ecosystem in Organ Transplantation</h2>
+            <p class="section-sub-title">Explore the specialized clinical departments that make deceased organ retrieval, conditioning, and recipient transplantation possible.</p>
+          </div>
+
+          <!-- Featured Brain / Neurology Department Hero Card -->
+          <div class="dept-hero-card">
+            <div class="dept-hero-left">
+              <div class="dept-hero-badge">FEATURED HOSPITAL DEPARTMENT</div>
+              <h3 class="dept-hero-title">Brain &amp; Neurology Department (मस्तिष्क एवं न्यूरोलॉजी विभाग)</h3>
+              <p class="dept-hero-text">
+                The Neurology and Neurosurgery Department is the foundational gatekeeper of deceased organ donation. In severe intracranial trauma, subarachnoid hemorrhage, or massive ischemic stroke, the Neuro-ICU team manages intracranial hypertension, conducts protocolized brainstem reflex tests, and coordinates with statutory authorities for Form-8 Brainstem Death certification.
+              </p>
+              <div class="dept-hero-tags">
+                <span>Neuro-ICU ICP Monitoring</span>
+                <span aria-hidden="true">·</span>
+                <span>Transcranial Doppler</span>
+                <span aria-hidden="true">·</span>
+                <span>EEG Cerebral Silence</span>
+                <span aria-hidden="true">·</span>
+                <span>THOA Form-8 BSD Board</span>
+              </div>
+            </div>
+            <div class="dept-hero-right">
+              <button type="button" class="btn-enter-dept" onclick="window.app && window.app.navigate('neurology-dept')">
+                <span class="btn-icon">🧠</span>
+                <span>Enter Neurology Dept Console</span>
+                <span class="btn-arrow">➔</span>
+              </button>
+              <div class="dept-stat-pill">
+                <strong>8 Dedicated Neuro-ICU Beds</strong> · 2 Active BSD Evaluations
+              </div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Hospital Departments Grid -->
+          <div class="hospital-departments-grid">
+            <!-- 1. CTVS & Heart -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">🫀</div>
+              <h4 class="dept-card-name">Cardiothoracic Surgery (CTVS) / Heart</h4>
+              <p class="dept-card-desc">Evaluates donor cardiac ejection fraction (LVEF &gt; 50%), administers continuous hypothermic perfusion, and prepares recipient ECMO / LVAD bridges.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Organ: Heart / Valves</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('waitlists'); window.app.selectOrgan('Heart');">View Waitlist ➔</button>
+              </div>
+            </div>
+
+            <!-- 2. Nephrology & Renal -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">🧬</div>
+              <h4 class="dept-card-name">Nephrology &amp; Renal Transplant</h4>
+              <p class="dept-card-desc">Directs living &amp; deceased kidney allocation, manages hemodialysis bridging, and runs complement-dependent cytotoxicity (CDC) crossmatches.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Organ: Kidneys</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('waitlists'); window.app.selectOrgan('Kidney');">View Waitlist ➔</button>
+              </div>
+            </div>
+
+            <!-- 3. Hepatology & GI -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">🩸</div>
+              <h4 class="dept-card-name">Hepatology &amp; Liver Transplant</h4>
+              <p class="dept-card-desc">Calculates MELD-Na / PELD urgency scores, evaluates liver steatosis histology (&lt; 15%), and plans split-liver procedures for pediatric recipients.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Organ: Liver</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('waitlists'); window.app.selectOrgan('Liver');">View Waitlist ➔</button>
+              </div>
+            </div>
+
+            <!-- 4. Pulmonology -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">🫁</div>
+              <h4 class="dept-card-name">Pulmonology &amp; Chest Medicine</h4>
+              <p class="dept-card-desc">Tests donor oxygenation challenges (PaO₂/FiO₂ &gt; 300), performs bedside bronchoscopic clearance, and optimizes protective mechanical ventilation.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Organ: Lungs</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('waitlists'); window.app.selectOrgan('Lungs');">View Waitlist ➔</button>
+              </div>
+            </div>
+
+            <!-- 5. Critical Care & Trauma ICU -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">⚡</div>
+              <h4 class="dept-card-name">Critical Care &amp; Neuro-Trauma ICU</h4>
+              <p class="dept-card-desc">Executes deceased donor hemodynamic maintenance (Rule of 100s: SBP &gt; 100, Urine &gt; 100 ml/hr), hormone resuscitation (T4/vasopressin), and euglycemia.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Specialty: ICU Resuscitation</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('chain-custody');">Smart Custody ➔</button>
+              </div>
+            </div>
+
+            <!-- 6. HLA Immunology Lab -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">🔬</div>
+              <h4 class="dept-card-name">Transplant Immunology &amp; HLA Lab</h4>
+              <p class="dept-card-desc">Performs high-resolution HLA-A, B, C, DRB1, DQB1 allele sequencing, Luminex Single Antigen Bead PRA screening, and virtual crossmatching.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Specialty: Histocompatibility</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('zkp-vault');">ZKP Vault ➔</button>
+              </div>
+            </div>
+
+            <!-- 7. Cornea & Ophthalmology -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">👁️</div>
+              <h4 class="dept-card-name">Cornea &amp; Eye Bank (Ophthalmology)</h4>
+              <p class="dept-card-desc">Performs specular microscopy for endothelial cell density (&gt; 2000 cells/mm²), stromal clarity grading, and optical penetrating keratoplasty preparation.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Organ: Corneas / Sclera</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('waitlists'); window.app.selectOrgan('Eyes');">View Waitlist ➔</button>
+              </div>
+            </div>
+
+            <!-- 8. Tissue & Skin Bank -->
+            <div class="hospital-dept-card">
+              <div class="dept-icon-box">🩹</div>
+              <h4 class="dept-card-name">Tissue &amp; Skin Bank (Plastic Surgery)</h4>
+              <p class="dept-card-desc">Harvests and cryopreserves split-thickness cadaveric skin allografts, providing critical biological dressings for high-percentage burn patients.</p>
+              <div class="dept-card-footer">
+                <span class="dept-role-kicker">Organ: Skin / Tissues</span>
+                <button type="button" class="dept-quick-link" onclick="window.app && window.app.navigate('waitlists'); window.app.selectOrgan('Skin');">View Waitlist ➔</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAYER 4: DUAL-UI ARCHITECTURE & START GATEWAY -->
+        <div class="home-layer-section dual-ui-section">
+          <div class="section-title-wrap">
+            <div class="section-badge-text">LAYER 4 · SYSTEM INTEGRATION</div>
+            <h2 class="section-main-title">Two Integrated UIs in One Unified Architecture</h2>
+            <p class="section-sub-title">Doosra Jeevan brings together bedside clinical brain death diagnostics and nationwide tamper-proof organ allocation.</p>
+          </div>
+
+          <div class="dual-ui-cards-grid">
+            <!-- UI 1 Card -->
+            <div class="ui-spec-card">
+              <div class="ui-spec-badge">UI 1 : CLINICAL &amp; NEUROLOGICAL</div>
+              <h3 class="ui-spec-title">Intracranial Suite &amp; Brain/Neurology Dept</h3>
+              <p class="ui-spec-desc">Dedicated clinical interface for hospital neurologists, neurosurgeons, and ICU intensivists at 100 apex transplant hospitals across India.</p>
+              <ul class="ui-spec-list">
+                <li>✔ Live Intracranial Pressure (ICP) &amp; CPP hemodynamic telemetry</li>
+                <li>✔ Protocolized 6-Brainstem Reflex Evaluation Matrix</li>
+                <li>✔ Statutory THOA Form-8 4-Doctor Medical Board e-Sign</li>
+                <li>✔ Deceased donor organ viability conditioning and packaging</li>
+              </ul>
+              <div class="ui-spec-action">
+                <button type="button" class="btn-launch-sub-ui" onclick="window.app && window.app.navigate('neurology-dept')">
+                  Open Brain/Neurology Suite ➔
+                </button>
+              </div>
+            </div>
+
+            <!-- UI 2 Card -->
+            <div class="ui-spec-card highlight">
+              <div class="ui-spec-badge" style="background:#0284c7; color:#fff;">UI 2 : ALLOCATION &amp; BLOCKCHAIN</div>
+              <h3 class="ui-spec-title">Doosra Jeevan National Organ Registry</h3>
+              <p class="ui-spec-desc">Statutory central allocation engine orchestrating 87 waiting recipients across 9 donatable organs with 9-node BFT quorum consensus.</p>
+              <ul class="ui-spec-list">
+                <li>✔ Automated multi-organ waitlist matching (Eyes, Heart, Liver, Kidney, etc.)</li>
+                <li>✔ 9-Node Statutory Blockchain Quorum with Byzantine Fault Tolerance</li>
+                <li>✔ Live Anomaly Scanner with zero-tamper Merkle proof verification</li>
+                <li>✔ Smart Container Transit with GPS green corridor AirTag tracking</li>
+              </ul>
+              <div class="ui-spec-action">
+                <button type="button" class="btn-launch-sub-ui primary" onclick="window.app && window.app.startPlatform('waitlists')">
+                  Open National Allocation Registry ➔
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Master Start Gateway -->
+          <div class="master-start-banner">
+            <div class="master-start-info">
+              <h3 class="master-start-title">Ready to explore the national organ transplant engine?</h3>
+              <p class="master-start-sub">Launch into the live interactive allocation waitlists, view 100 apex hospital nodes, or monitor the blockchain quorum.</p>
+            </div>
+            <div class="master-start-buttons">
+              <button type="button" class="btn-master-start" onclick="window.app && window.app.startPlatform('waitlists')">
+                <span class="btn-icon">⚡</span>
+                <span>START PLATFORM (शुरू करें)</span>
+              </button>
+              <button type="button" class="btn-master-scanner" onclick="window.app && window.app.startPlatform('anomaly-scanner')">
+                <span class="btn-icon">🛡️</span>
+                <span>Anomaly Scanner (9-Node)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW: BRAIN & NEUROLOGY DEPARTMENT CONSOLE
+           ══════════════════════════════════════════════ -->
+      <section id="view-neurology-dept" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <div class="view-kicker">APEX HOSPITAL WORKSPACE · NEURO-ICU COMMAND</div>
+              <h2 class="view-title-hi">मस्तिष्क एवं न्यूरोलॉजी विभाग</h2>
+              <div class="view-title-en">Brain &amp; Neurology Department Console</div>
+              <p class="view-desc">
+                Specialized hospital clinical console for intracranial pathology triage, continuous ICP monitoring, brainstem death evaluation, and direct statutory clearance for organ donation.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.navigate('home')">
+                🏠 Back to Home
+              </button>
+              <button type="button" class="btn-certify-match" onclick="window.app && window.app.startPlatform('waitlists')">
+                🚀 Launch Allocation Queue ➔
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Neurology Workspace Content -->
+        <div class="neuro-workspace-grid">
+          <!-- Active Case Study: Severe Intracranial Traumatic Brain Injury -->
+          <div class="neuro-case-panel">
+            <div class="panel-header">
+              <div class="panel-header-title">
+                <span class="status-pulse-dot red"></span>
+                <span>ACTIVE CASE #NICU-7701 : SEVERE INTRACRANIAL SUBARACHNOID HEMORRHAGE</span>
+              </div>
+              <span class="case-status-tag">BSD CONFIRMED · POTENTIAL DONOR</span>
+            </div>
+
+            <div class="case-details-row">
+              <div class="case-stat">
+                <span class="stat-label">Patient Name</span>
+                <span class="stat-val">Rahul Sharma</span>
+              </div>
+              <div class="case-stat">
+                <span class="stat-label">Age &amp; Gender</span>
+                <span class="stat-val">34 Yrs / Male</span>
+              </div>
+              <div class="case-stat">
+                <span class="stat-label">Blood Group</span>
+                <span class="stat-val text-rose-600 font-bold">B Positive (B+)</span>
+              </div>
+              <div class="case-stat">
+                <span class="stat-label">Hospital Bed</span>
+                <span class="stat-val">AIIMS Neuro-ICU Bed #03</span>
+              </div>
+              <div class="case-stat">
+                <span class="stat-label">Admission Cause</span>
+                <span class="stat-val">Severe TBI (RTA) + Intracranial Hemorrhage</span>
+              </div>
+            </div>
+
+            <!-- Intracranial CT Scan & Diagnostic Imaging Summary -->
+            <div class="cranial-imaging-card">
+              <div class="imaging-header">
+                <strong>Intracranial CT Angiography &amp; Radiologist Findings</strong>
+                <span class="text-xs text-slate-500">Scan ID: CT-CRANIAL-9921 · Performed 24-Oct-2026 07:15 IST</span>
+              </div>
+              <p class="imaging-text">
+                Non-contrast cranial CT reveals extensive traumatic subarachnoid hemorrhage with diffuse cerebral edema and complete effacement of the basal cisterns. Severe transtentorial and tonsillar herniation noted. Transcranial Doppler confirms absent diastolic flow with small systolic spikes, signifying intracranial circulatory arrest.
+              </p>
+              <div class="imaging-metrics">
+                <span>Midline Shift: 14.2 mm</span>
+                <span aria-hidden="true">·</span>
+                <span>Basal Cisterns: Completely Compressed</span>
+                <span aria-hidden="true">·</span>
+                <span>Cerebral Perfusion: Zero Confirmed</span>
+              </div>
+            </div>
+
+            <!-- Direct Dispatch to NOTTO Allocation -->
+            <div class="neuro-dispatch-box">
+              <div class="dispatch-text">
+                <strong>Statutory Clearance Ready:</strong> THOA Form-8 dual examination complete. Next-of-Kin dual family consent recorded under Section 9. Ready to dispatch donor profile to the NOTTO decentralized allocation engine.
+              </div>
+              <button type="button" class="btn-certify-match" onclick="window.app && window.app.dispatchNeurologyDonor()">
+                ⚡ Dispatch Rahul Sharma (B+) to NOTTO Queue
+              </button>
+            </div>
+          </div>
+
+          <!-- Neuro-ICU 8-Bed Status Station -->
+          <div class="neuro-beds-panel">
+            <div class="panel-header">
+              <span class="panel-header-title">AIIMS Neuro-ICU Bed Status (8 Critical Beds)</span>
+              <span class="text-xs text-slate-500">Live Telemetry</span>
+            </div>
+
+            <div class="icu-beds-grid">
+              <div class="icu-bed-card occupied">
+                <div class="bed-top"><span>Bed 01</span><span class="bed-status">POST-OP CRANIOTOMY</span></div>
+                <div class="bed-vitals">ICP: 11.2 mmHg · GCS: 11/15</div>
+              </div>
+              <div class="icu-bed-card occupied">
+                <div class="bed-top"><span>Bed 02</span><span class="bed-status">ISCHEMIC STROKE</span></div>
+                <div class="bed-vitals">ICP: 14.5 mmHg · GCS: 8/15</div>
+              </div>
+              <div class="icu-bed-card donor-active">
+                <div class="bed-top"><span>Bed 03</span><span class="bed-status font-bold text-rose-600">DONOR (RAHUL SHARMA)</span></div>
+                <div class="bed-vitals">ICP: 36.2 mmHg · GCS: 3/15 (BSD)</div>
+              </div>
+              <div class="icu-bed-card occupied">
+                <div class="bed-top"><span>Bed 04</span><span class="bed-status">SUBDURAL HEMATOMA</span></div>
+                <div class="bed-vitals">ICP: 16.0 mmHg · GCS: 9/15</div>
+              </div>
+              <div class="icu-bed-card available">
+                <div class="bed-top"><span>Bed 05</span><span class="bed-status text-emerald-600">AVAILABLE</span></div>
+                <div class="bed-vitals">Sanitized &amp; Ventilator Armed</div>
+              </div>
+              <div class="icu-bed-card occupied">
+                <div class="bed-top"><span>Bed 06</span><span class="bed-status">STATUS EPILEPTICUS</span></div>
+                <div class="bed-vitals">ICP: 12.1 mmHg · GCS: 7/15</div>
+              </div>
+              <div class="icu-bed-card occupied">
+                <div class="bed-top"><span>Bed 07</span><span class="bed-status">INTRACEREBRAL BLEED</span></div>
+                <div class="bed-vitals">ICP: 18.4 mmHg · GCS: 6/15</div>
+              </div>
+              <div class="icu-bed-card available">
+                <div class="bed-top"><span>Bed 08</span><span class="bed-status text-emerald-600">AVAILABLE</span></div>
+                <div class="bed-vitals">Emergency Trauma Ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 0: DONOR REGISTRATION FORM (3.1)
+           ══════════════════════════════════════════════ -->
+      <section id="view-donor-registration" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">दाता पंजीकरण</h2>
+              <div class="view-title-en">Donor / Recipient Registration</div>
+              <p class="view-desc">
+                Formal enrollment into the national organ transplant registry (THOA Section 5). On submit, the donor organ is registered on-chain and matched against the active recipient queue.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="donor-registration-wrap">
+          <!-- Main Form Container -->
+          <div id="donorFormContainer" class="donor-form-card">
+            <form id="donorEnrollmentForm" onsubmit="window.app && window.app.handleDonorSubmit(event)">
+              <div class="donor-form-grid">
+                <!-- Full Name -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorFullName">Recipient/Donor Full Name <span class="req">*</span></label>
+                  <input type="text" id="donorFullName" class="donor-input" placeholder="e.g. Ramesh Kumar Verma" required>
+                </div>
+
+                <!-- Age -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorAge">Age <span class="req">*</span></label>
+                  <input type="number" id="donorAge" class="donor-input" min="1" max="100" placeholder="1 - 100" required>
+                </div>
+
+                <!-- Blood Group -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorBloodGroup">Blood Group <span class="req">*</span></label>
+                  <select id="donorBloodGroup" class="donor-select" required>
+                    <option value="O+">O+ (Universal RBC Donor Compatibility)</option>
+                    <option value="O-">O- (Universal Donor)</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+" selected>B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+ (Universal Recipient)</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                </div>
+
+                <!-- Region -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorRegion">Region <span class="req">*</span></label>
+                  <select id="donorRegion" class="donor-select" required>
+                    <option value="North">North (AIIMS Delhi / PGIMER Hub)</option>
+                    <option value="South">South (Apollo Chennai / CMC Hub)</option>
+                    <option value="East">East (SSKM Kolkata Hub)</option>
+                    <option value="West">West (KEM Mumbai / Ruby Hall Hub)</option>
+                    <option value="Central">Central (AIIMS Bhopal / Raipur Hub)</option>
+                    <option value="Northeast">Northeast (NEIGRIHMS / GMCH Hub)</option>
+                  </select>
+                </div>
+
+                <!-- Organ Required / Donated -->
+                <div class="donor-form-field form-full-col">
+                  <label class="donor-form-label" for="donorOrgan">Organ Required / Donated <span class="req">*</span></label>
+                  <select id="donorOrgan" class="donor-select" required>
+                    <option value="Eyes">Eyes (Cornea / आँखें)</option>
+                    <option value="Heart">Heart (हृदय)</option>
+                    <option value="Liver" selected>Liver (यकृत / लिवर)</option>
+                    <option value="Kidney">Kidney (गुर्दे / किडनी)</option>
+                    <option value="Blood">Blood (Stem Cells / रक्त)</option>
+                    <option value="Lungs">Lungs (फेफड़े / लंग्स)</option>
+                    <option value="Pancreas">Pancreas (अग्न्याशय / पैंक्रियाज)</option>
+                    <option value="Skin">Skin (Tissue Graft / त्वचा)</option>
+                    <option value="Bone Marrow">Bone Marrow (अस्थि मज्जा)</option>
+                    
+                  </select>
+                </div>
+
+                <!-- Pre-existing Health History -->
+                <div class="donor-form-field form-full-col">
+                  <label class="donor-form-label">Pre-existing Health History</label>
+                  <div class="health-history-grid" id="healthHistoryGrid">
+                    <label class="health-checkbox-label">
+                      <input type="checkbox" name="healthHist" value="Diabetes" onchange="window.app && window.app.handleHealthCheckbox(this)">
+                      <span>Diabetes</span>
+                    </label>
+                    <label class="health-checkbox-label">
+                      <input type="checkbox" name="healthHist" value="Hypertension" onchange="window.app && window.app.handleHealthCheckbox(this)">
+                      <span>Hypertension</span>
+                    </label>
+                    <label class="health-checkbox-label">
+                      <input type="checkbox" name="healthHist" value="Cardiac Disease" onchange="window.app && window.app.handleHealthCheckbox(this)">
+                      <span>Cardiac Disease</span>
+                    </label>
+                    <label class="health-checkbox-label">
+                      <input type="checkbox" name="healthHist" value="Renal Disease" onchange="window.app && window.app.handleHealthCheckbox(this)">
+                      <span>Renal Disease</span>
+                    </label>
+                    <label class="health-checkbox-label">
+                      <input type="checkbox" name="healthHist" value="Hepatic Disease" onchange="window.app && window.app.handleHealthCheckbox(this)">
+                      <span>Hepatic Disease</span>
+                    </label>
+                    <label class="health-checkbox-label">
+                      <input type="checkbox" name="healthHist" value="Smoking History" onchange="window.app && window.app.handleHealthCheckbox(this)">
+                      <span>Smoking History</span>
+                    </label>
+                    <label class="health-checkbox-label" style="font-weight: 700;">
+                      <input type="checkbox" name="healthHist" id="healthNone" value="None" checked onchange="window.app && window.app.handleHealthNoneCheckbox(this)">
+                      <span>None (Clean History)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Insurance Provider -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorInsurance">Insurance Provider</label>
+                  <select id="donorInsurance" class="donor-select">
+                    <option value="Ayushman Bharat PM-JAY">Ayushman Bharat PM-JAY</option>
+                    <option value="Star Health">Star Health</option>
+                    <option value="New India Assurance">New India Assurance</option>
+                    <option value="HDFC ERGO">HDFC ERGO</option>
+                    <option value="ICICI Lombard">ICICI Lombard</option>
+                    <option value="Niva Bupa">Niva Bupa</option>
+                    <option value="Care Health">Care Health</option>
+                    <option value="Bajaj Allianz">Bajaj Allianz</option>
+                    <option value="Oriental Insurance">Oriental Insurance</option>
+                    <option value="United India">United India</option>
+                    <option value="Self-Pay">Self-Pay</option>
+                  </select>
+                </div>
+
+                <!-- Policy Number -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorPolicyNum">Policy Number</label>
+                  <input type="text" id="donorPolicyNum" class="donor-input" placeholder="e.g. PMJAY-LIV-2026-889021">
+                </div>
+
+                <!-- Coordinator Name -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorCoordinatorName">Transplant Coordinator Name <span class="req">*</span></label>
+                  <input type="text" id="donorCoordinatorName" class="donor-input" placeholder="Dr. Rajeshwar Singh" required>
+                </div>
+
+                <!-- Coordinator Phone -->
+                <div class="donor-form-field">
+                  <label class="donor-form-label" for="donorCoordinatorPhone">Coordinator Phone <span class="req">*</span></label>
+                  <input type="tel" id="donorCoordinatorPhone" class="donor-input" placeholder="+91 98102 44321" required>
+                </div>
+
+                <!-- Statutory Consent Checkbox -->
+                <div class="form-full-col">
+                  <div class="consent-checkbox-wrap">
+                    <input type="checkbox" id="donorConsentCheckbox" required>
+                    <label for="donorConsentCheckbox" class="consent-text">
+                      <strong>Statutory Verification:</strong> I confirm biometric identity verification and dual family consent per THOA Sections 3 & 9-1A. I understand this registration will be immutably recorded on the simulated national blockchain ledger.
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-full-col" style="margin-top: 0.5rem;">
+                  <button type="submit" class="btn-submit-donor" id="btnSubmitDonor">
+                    <span>⚡ Submit to Registry & Enroll on Waitlist</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Dynamic Success Screen & Matching Results -->
+          <div id="donorSuccessContainer" class="donor-success-container hidden">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+      </section>
+
+            <!-- ══════════════════════════════════════════════
+           VIEW 1: REGISTRY DASHBOARD
+           ══════════════════════════════════════════════ -->
+      <section id="view-dashboard" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">राष्ट्रीय अंग प्रत्यारोपण डैशबोर्ड</h2>
+              <div class="view-title-en">National Organ Registry Analytics & 100-Hospital Transplant Network</div>
+              <p class="view-desc">
+                Real-time national analytics across 100 apex certified transplant centers in India. Filter by State, Organ, and Hospital with live price alerts, enlarged blood group requirements, and dynamic CSV dataset manipulation.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-csv-action" onclick="window.app && window.app.openCsvModal()">
+                📊 Import / Edit CSV Dataset
+              </button>
+              <button type="button" class="btn-csv-action" onclick="window.app && window.app.exportDatasetCsv()">
+                📥 Export CSV
+              </button>
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat Cards Grid -->
+        <div class="dashboard-stats-grid" id="dashboardStatsGrid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+
+        <!-- ENLARGED BLOOD GROUP INVENTORY & MATCHING MATRIX -->
+        <div class="blood-matrix-section" id="bloodMatrixSection">
+          <div class="blood-matrix-header">
+            <div>
+              <h3 class="blood-matrix-title">
+                <span>🩸</span> National Blood Group Requirements & Demand Matrix (रक्त समूह मांग एवं मिलान)
+              </h3>
+              <p class="blood-matrix-subtitle">
+                Enlarged live availability, patient requirements, and compatibility across all 100 Apex Hospitals. Click any blood group to filter hospitals and matching candidates.
+              </p>
+            </div>
+            <div class="blood-matrix-actions">
+              <span class="blood-all-filter-pill" id="bloodFilterAllBtn" onclick="window.app && window.app.filterByBloodGroup('ALL')">
+                Showing All Blood Groups
+              </span>
+            </div>
+          </div>
+
+          <!-- Enlarged Blood Group Cards Grid -->
+          <div class="blood-group-enlarged-grid" id="bloodGroupEnlargedGrid">
+            <!-- Populated dynamically with enlarged blood group blocks -->
+          </div>
+        </div>
+
+        <!-- INTERACTIVE STATE, ORGAN & HOSPITAL FILTER / SPOTLIGHT SELECTOR -->
+        <div class="hospital-filter-spotlight-section">
+          <div class="filter-controls-bar">
+            <div class="filter-controls-header">
+              <div style="font-weight: 700; color: #003087; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+                <span>🎯</span> Filter Transplant Centers by State & Organ / अस्पताल एवं राज्य चयन
+              </div>
+              <div id="datasetCounterBadge" class="dataset-counter-badge">
+                Showing 100 of 100 Hospitals
+              </div>
+            </div>
+
+            <div class="filter-inputs-grid">
+              <!-- Filter 1: State / Region -->
+              <div class="filter-field">
+                <label class="filter-label" for="dashStateFilter">📍 Select State / UT (राज्य)</label>
+                <select id="dashStateFilter" class="filter-select" onchange="window.app && window.app.handleDashboardStateFilter(this.value)">
+                  <option value="ALL">All States / UTs (सम्पूर्ण भारत - 100 Centers)</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <!-- Filter 2: Organ Type -->
+              <div class="filter-field">
+                <label class="filter-label" for="dashOrganFilter">🫀 Transplant Organ (प्रत्यारोपण अंग)</label>
+                <select id="dashOrganFilter" class="filter-select" onchange="window.app && window.app.handleDashboardOrganFilter(this.value)">
+                  <option value="ALL">All Organs (सभी 9 अंग)</option>
+                  <option value="Kidney">Kidney (गुर्दा / वृक्क)</option>
+                  <option value="Liver">Liver (यकृत / लिवर)</option>
+                  <option value="Heart">Heart (हृदय)</option>
+                  <option value="Lung">Lung (फेफड़े)</option>
+                  <option value="Cornea">Cornea (नेत्र / कॉर्निया)</option>
+                  <option value="Pancreas">Pancreas (अग्न्याशय)</option>
+                  <option value="Skin">Skin (त्वचा)</option>
+                  <option value="Bone Marrow">Bone Marrow (अस्थि मज्जा)</option>
+                  <option value="Blood">Blood (दुर्लभ रक्त)</option>
+                </select>
+              </div>
+
+              <!-- Filter 3: Center Type -->
+              <div class="filter-field">
+                <label class="filter-label" for="dashTypeFilter">🏥 Center Category (प्रकार)</label>
+                <select id="dashTypeFilter" class="filter-select" onchange="window.app && window.app.handleDashboardTypeFilter(this.value)">
+                  <option value="ALL">All Center Types (सभी श्रेणियां)</option>
+                  <option value="Transplant Centre">Transplant Centre</option>
+                  <option value="Retrieval Centre">Retrieval Centre</option>
+                  <option value="Tissue Bank">Tissue Bank</option>
+                  <option value="Cornea Transplant Centre/Eye Bank">Cornea Transplant Centre / Eye Bank</option>
+                </select>
+              </div>
+
+              <!-- Hospital Direct Dropdown -->
+              <div class="filter-field">
+                <label class="filter-label" for="dashHospitalSelect">🏨 Direct Hospital Selector (अस्पताल विवरण)</label>
+                <select id="dashHospitalSelect" class="filter-select" onchange="window.app && window.app.selectHospitalSpotlight(this.value)">
+                  <option value="">-- Choose Hospital to View Price Alerts & Details --</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPOTLIGHT HOSPITAL & PRICE ALERT CARD -->
+          <div id="hospitalSpotlightWrap" class="hospital-spotlight-wrap">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Live Organ Transport Tracking Map Section -->
+        <div class="geo-transport-section">
+          <div>
+            <div style="margin-bottom: 0.75rem;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: #003087; display: flex; align-items: center; gap: 0.4rem;">
+                <span>🗺️</span> Live Organ Transport Tracking / सक्रिय अंग परिवहन मानचित्र
+              </h3>
+              <p style="font-size: 0.74rem; color: #64748b;">
+                Simulated real-time organ movement from donor retrieval center to recipient hospital via green corridors & chartered air transport.
+              </p>
+            </div>
+            <div class="map-container-wrap">
+              <div id="leafletTransportMap"></div>
+              <div class="map-overlay-badge" id="mapOverlayBadge">
+                <span style="color: #10b981;">● GPS ACTIVE</span>
+                <span id="mapOverlayCaseText">Eyes: Mumbai KEM → Medanta Gurugram</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Transport Cases Sidebar -->
+          <div class="transport-cases-sidebar">
+            <div class="transport-cases-header">
+              <span>Active Transport Cases (9)</span>
+              <span style="font-family: var(--font-mono); color: #059669; font-size: 0.72rem;">● LIVE</span>
+            </div>
+            <div class="transport-cases-list" id="transportCasesList">
+              <!-- Dynamically populated by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Demographics & Waitlist Charts Grid -->
+        <div class="dashboard-charts-grid">
+          <!-- Chart 1: Organ Availability (Waitlist Size by Organ) -->
+          <div class="chart-card">
+            <div class="chart-card-title">Organ Availability — Active Waitlist Size by Organ</div>
+            <div class="chart-card-sub">Distribution of waiting candidates across all 9 national organ programs</div>
+            <div class="chart-canvas-wrap" id="chartOrganAvailabilityWrap">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Chart 2: Patient Waitlist Demographics (Donut by Organ) -->
+          <div class="chart-card">
+            <div class="chart-card-title">Patient Waitlist Demographics — by Organ</div>
+            <div class="chart-card-sub">Proportional share of national organ requests</div>
+            <div class="chart-canvas-wrap" id="chartDonutOrganWrap">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Chart 3: Age Distribution -->
+          <div class="chart-card">
+            <div class="chart-card-title">Patient Age Distribution</div>
+            <div class="chart-card-sub">Age demographic breakdown of all active registry candidates</div>
+            <div class="chart-canvas-wrap" id="chartAgeDistWrap">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Chart 4: Regional & Blood Group Distribution -->
+          <div class="chart-card">
+            <div class="chart-card-title">Regional Distribution (NOTTO / SOTTO Zones)</div>
+            <div class="chart-card-sub">Candidate allocation volume across North, South, West, East, Central & Northeast</div>
+            <div class="chart-canvas-wrap" id="chartRegionDistWrap">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 100-Hospital waala Complete Registry Section -->
+        <div class="hospital-dashboard-section">
+          <div class="hospital-table-header">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: #003087;">
+                🏥 100 Apex Hospital Registry & Allocation Network (अस्पताल डैशबोर्ड)
+              </h3>
+              <p style="font-size: 0.74rem; color: #64748b;">
+                Comprehensive directory with authorized organs, enlarged blood group requirements, surgery types, price alerts, and success rates.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="hospitalSearchInput" class="hospital-search-input" placeholder="Search hospital name, city, state, or organ..." oninput="window.app && window.app.filterHospitalTable(this.value)">
+            </div>
+          </div>
+          <div class="hospital-table-wrap">
+            <table class="hospital-data-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px;">#</th>
+                  <th>Hospital Name & Type</th>
+                  <th>State & District</th>
+                  <th>Transplant Organs</th>
+                  <th>Required Blood Group</th>
+                  <th>Primary Surgery & Price Alert</th>
+                  <th>Success Rate</th>
+                  <th>Waitlist Stats</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="hospitalTableBody">
+                <!-- Dynamically populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 2: ADMIN — ORGAN MATCHING WAITLISTS
+           ══════════════════════════════════════════════ -->
+      <section id="view-waitlists" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">9-अंग मिलान प्रतीक्षा सूची</h2>
+              <div class="view-title-en">National 9-Organ Allocation & Matching Waitlists</div>
+              <p class="view-desc">
+                Decentralized multi-sig organ registry for <strong>Eyes, Heart, Liver, Kidney, Blood, Lungs, Pancreas, Skin, and Bone Marrow</strong>. When a match is certified, the recipient is liberated to the ZKP Vault and the waitlist automatically advances the next patient to Rank #1.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <!-- 10 Organ selector tabs -->
+          <div class="organ-tabs-row" id="organTabsContainer">
+            <!-- Dynamically populated by app.js with 10 organs -->
+          </div>
+
+          <!-- Dynamic Waitlist Grid -->
+          <div class="waitlist-grid" id="waitlistCardsContainer">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 2.5: ORGAN AIRTAG & A2A CHAIN-OF-CUSTODY
+           ══════════════════════════════════════════════ -->
+      <section id="view-chain-custody" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">स्मार्ट कंटेनर, डिजिटल कस्टडी एवं A2A पोर्टल</h2>
+              <div class="view-title-en">Organ Smart Container "AirTag" & Action-to-Approval-to-Action (A2A) Chain of Custody</div>
+              <p class="view-desc">
+                Physical anti-tampering (tamper-evident E-Seals, lid vacuum), multi-frequency digital identity (QR, NFC NTAG424, UHF RFID), real-time preservation telemetry (temperature, perfusion, pO2, G-force), live GPS Green Corridor tracking, and comprehensive NOTTO clinical organ evaluation for transplant officers.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-notto-slip" onclick="window.app && window.app.openNottoDigitalSlipModal()">
+                📜 View NOTTO Digital Slip
+              </button>
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9-Organ Telemetry Selector Tabs -->
+        <div class="glass-panel" style="margin-bottom: 1.25rem;">
+          <div class="organ-tabs-row" id="custodyOrganTabsContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- A2A Workflow Stepper Banner -->
+        <div class="a2a-workflow-banner" id="a2aWorkflowBanner">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- 3-Column Smart Grid: AirTag Telemetry | Biological Organ Twin | Hospital Clinical Evaluation -->
+        <div class="custody-main-grid" id="custodyMainGrid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 3: IMMUTABLE DECISION LOG
+           ══════════════════════════════════════════════ -->
+      <section id="view-decision-log" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">अपरिवर्तनीय निर्णय लॉग</h2>
+              <div class="view-title-en">Cryptographically Signed Ledger of All 9-Organ Allocations</div>
+              <p class="view-desc">
+                Append-only blockchain record. Every match certification, document sync, and organ liberation is permanently sealed with SHA-256 hash chains.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="blocks-timeline" id="decisionLogsContainer">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+      </section>
+
+      
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 5: SECURE ZERO-KNOWLEDGE VAULT
+           ══════════════════════════════════════════════ -->
+      <section id="view-zkp-vault" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">ज़ीरो-नॉलेज वॉल्ट (गोपनीयता संग्रह)</h2>
+              <div class="view-title-en">Post-Transplant Cryptographic Privacy Archive</div>
+              <p class="view-desc">
+                Under THOA Privacy Protocol Clause IV, all recipient biometric records are permanently sealed into Zero-Knowledge proofs upon transplant completion to protect donor and recipient anonymity.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="vault-cards-grid" id="vaultCardsContainer">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 6: DONOR HISTORY ARCHIVE
+           ══════════════════════════════════════════════ -->
+      <section id="view-donor-history" class="view-container hidden">
+        <div class="view-header">
+          <div class="view-header-flex">
+            <div>
+              <h2 class="view-title-hi">दाता इतिहास एवं प्रत्यारोपण संग्रह</h2>
+              <div class="view-title-en">National Donor History & Completed Transplants Archive</div>
+              <p class="view-desc">
+                Permanent cryptographic archive of all completed organ transplants, including donor date, recipient outcome, lead surgical teams, and SOTTO multi-sig consensus blocks.
+              </p>
+            </div>
+            <div class="view-header-actions">
+              <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+                🔄 Reset Database
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <!-- Filter Controls -->
+          <div class="donor-history-filter-bar">
+            <input type="text" id="donorHistorySearch" class="hospital-search-input" placeholder="Search by donor/recipient name, hospital..." oninput="window.app && window.app.renderDonorHistory()">
+            <select id="donorHistoryOrganFilter" class="donor-select" style="padding: 0.4rem 0.6rem; font-size: 0.8rem;" onchange="window.app && window.app.renderDonorHistory()">
+              <option value="All">All 10 Organs (सभी अंग)</option>
+              <option value="Eyes">Eyes</option>
+              <option value="Heart">Heart</option>
+              <option value="Liver">Liver</option>
+              <option value="Kidney">Kidney</option>
+              <option value="Blood">Blood</option>
+              <option value="Lungs">Lungs</option>
+              <option value="Pancreas">Pancreas</option>
+              <option value="Skin">Skin</option>
+              <option value="Bone Marrow">Bone Marrow</option>
+              
+            </select>
+          </div>
+
+          <!-- History Grid -->
+          <div class="history-grid-container" id="donorHistoryContainer">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 7: PATIENT LOGIN
+           ══════════════════════════════════════════════ -->
+      <section id="view-consumer-login" class="view-container hidden">
+        <div class="glass-panel login-centered-wrap">
+          <div class="login-icon-box">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h2 class="view-title-hi" style="text-align: center; font-size: 1.5rem;">मरीज़ पोर्टल लॉगिन</h2>
+          <div class="view-title-en" style="text-align: center; margin-bottom: 1rem;">Patient Portal Authentication (87 Registered Candidates)</div>
+          
+          <p style="font-size: 0.85rem; color: #475569; text-align: center; margin-bottom: 1.5rem;">
+            Select your registered patient identity across any of the 9 organs (Eyes, Heart, Liver, Kidney, Blood, Lungs, Pancreas, Skin, Bone Marrow) to verify diagnostic records, monitor waitlist rank progression, and sign allocation agreements.
+          </p>
+
+          <div class="form-group">
+            <label for="consumerPatientSelect" class="form-label">Select Registered Patient / मरीज़ चुनें:</label>
+            <select id="consumerPatientSelect" class="custom-select">
+              <!-- Dynamically filled with 87 patients -->
+            </select>
+          </div>
+
+          <button type="button" class="btn-authenticate" id="btnLoginSubmit" onclick="window.app && window.app.loginAsPatient()">
+            Authenticate Secure Signature / प्रमाणीकृत करें
+          </button>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 8: PATIENT PORTAL
+           ══════════════════════════════════════════════ -->
+      <section id="view-consumer-portal" class="view-container hidden">
+        <div class="consumer-portal-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="patient-portal-badge">PATIENT PORTAL · RECIPIENT ACCESS</span>
+              <span id="consumerAadhaarBadge" class="aadhaar-verified-pill">✔ AADHAAR e-KYC VERIFIED</span>
+            </div>
+            <h2 class="view-title-hi" id="consumerGreeting" style="margin-top: 4px;">मरीज़ डैशबोर्ड / Patient Portal</h2>
+            <div class="view-title-en" id="consumerSubheading">Decentralized Allocation Ledger & Live Preservation Pipeline</div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn-secondary-portal" onclick="window.app && window.app.openClausesModal()">
+              ⚖ Legal Clauses & Rights
+            </button>
+            <button type="button" class="btn-clean-reset" onclick="window.app && window.app.confirmResetDatabase()">
+              🔄 Reset Database
+            </button>
+            <button type="button" class="btn-signout" id="btnConsumerSignOut" onclick="window.app && window.app.logoutPatient()">
+              Secure Sign-Out ⎋
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Two Column Status & Booking Area -->
+        <div id="consumerPortalDynamicContent">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+
+        <!-- Government Notice Box -->
+        <div class="gov-notice-callout">
+          <strong>सूचना / Statutory Notice:</strong> This portal provides cryptographically verified recipient matching records and live smart container preservation telemetry under the Transplantation of Human Organs Act (THOA) 1994 & NOTTO guidelines. When an organ is allocated, the recipient's record is sealed into the Zero-Knowledge Vault and the waitlist automatically advances the next patient in line.
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 9: AI AGENTS HUB (WORKFLOW, LIVE TESTING & INTERACTIVE INPUTS)
+           ══════════════════════════════════════════════ -->
+      <section id="view-ai-agent" class="view-container hidden">
+        <!-- Banner Header -->
+        <div class="panel-header-banner" style="background: linear-gradient(135deg, #001f5c 0%, #003087 100%); color: #ffffff; padding: 1.5rem 2rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85;">Autonomous Multi-Agent Orchestrator & Live API Studio</div>
+            <h1 style="margin: 0.25rem 0 0 0; font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem;">
+              <span>🤖 AI Agents Hub (ऑटोनॉमस एजेंट्स और लाइव एपीआई)</span>
+            </h1>
+            <p style="margin: 0.35rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">
+              All 3 connected agents operating via live real APIs (Mistral AI Viability, Resend Emergency Email, Telegram Bot Alert) with interactive inputs.
+            </p>
+          </div>
+          <button type="button" class="btn-certify-match" style="background: #10b981; border: none; color: #ffffff; padding: 0.65rem 1.3rem; font-weight: 700; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(16,185,129,0.3);" onclick="window.app && window.app.runMasterAgenticPipeline()">
+            <span>⚡ Run Master AI Pipeline (All Agents)</span>
+          </button>
+        </div>
+
+        <!-- Master Pipeline Execution Live Telemetry Box -->
+        <div style="background: #0f172a; color: #f8fafc; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.8rem; border: 1px solid #1e293b; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 0.6rem; margin-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span class="live-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #22c55e;"></span>
+              <span style="color: #38bdf8; font-weight: 700; font-size: 0.9rem;">📡 Live AI Pipeline Execution Console (मास्टर आउटपुट)</span>
+            </div>
+            <button type="button" style="background: rgba(255,255,255,0.08); border: 1px solid #475569; color: #94a3b8; font-size: 0.72rem; padding: 3px 8px; border-radius: 4px; cursor: pointer;" onclick="document.getElementById('masterAgentTelemetryLogs').textContent = 'Awaiting execution. Click any of the test buttons below to run agents with real inputs!'">Clear Log</button>
+          </div>
+          <pre id="masterAgentTelemetryLogs" style="margin: 0; min-height: 140px; max-height: 260px; overflow-y: auto; color: #a5f3fc; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.82rem; white-space: pre-wrap; word-break: break-word; line-height: 1.5;">✨ Welcome to the AI Agents Hub!
+Choose an agent below, fill in your customized inputs, and click "Run Agent" to see real-time output generated from your real API keys.</pre>
+        </div>
+
+        <!-- 3 Interactive Agent Cards with Inputs and Outputs -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.4rem; margin-bottom: 2rem;">
+          
+          <!-- AGENT 1: MISTRAL AI CLINICAL VIABILITY AGENT -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
+              <div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #6366f1; text-transform: uppercase;">Agent #1 (AI Assessment)</span>
+                <h2 style="margin: 0.15rem 0 0 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">🧠 Mistral AI Viability Agent</h2>
+              </div>
+              <span style="background: #e0e7ff; color: #4338ca; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px;">mistral-small</span>
+            </div>
+            
+            <p style="font-size: 0.78rem; color: #64748b; margin: 0 0 1rem 0; line-height: 1.4;">
+              Evaluates donor parameters, cold ischemia window, and tissue viability to score transplantation safety (0-100%).
+            </p>
+
+            <!-- Agent 1 Inputs -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.9rem; margin-bottom: 1rem; flex: 1;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 0.6rem; text-transform: uppercase;">Required Inputs / इनपुट:</div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Donor Name (नाम)</label>
+                  <input type="text" id="mistralInputName" value="Rahul Sharma" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Age (उम्र)</label>
+                  <input type="number" id="mistralInputAge" value="34" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Blood Group (रक्त समूह)</label>
+                  <select id="mistralInputBlood" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;">
+                    <option value="O+">O+</option>
+                    <option value="A+">A+</option>
+                    <option value="B+">B+</option>
+                    <option value="AB+">AB+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Organ (अंग)</label>
+                  <select id="mistralInputOrgan" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;">
+                    <option value="Kidney">Kidney (गुर्दा)</option>
+                    <option value="Liver">Liver (यकृत)</option>
+                    <option value="Heart">Heart (हृदय)</option>
+                    <option value="Lungs">Lungs (फेफड़े)</option>
+                    <option value="Pancreas">Pancreas (अग्न्याशय)</option>
+                    <option value="Cornea">Cornea (कॉर्निया)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Clinical Condition & Cold Ischemia</label>
+                <input type="text" id="mistralInputCondition" value="Optimal perfusion, CIT estimated < 3.2 hrs, no major comorbidities." style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.78rem; box-sizing: border-box;" />
+              </div>
+            </div>
+
+            <button type="button" id="btnTestMistral" style="width: 100%; background: #4f46e5; color: #ffffff; padding: 0.6rem; border: none; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;" onclick="window.app && window.app.executeMistralAgent()">
+              <span>🧠 Run Mistral AI Assessment</span>
+            </button>
+
+            <!-- Agent 1 Output Box -->
+            <div id="mistralAgentOutput" style="display: none; margin-top: 0.9rem; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 6px; padding: 0.85rem; font-size: 0.78rem; color: #581c87;"></div>
+          </div>
+
+          <!-- AGENT 2: RESEND EMERGENCY HOSPITAL EMAIL DISPATCH AGENT -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
+              <div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #0284c7; text-transform: uppercase;">Agent #2 (Hospital Dispatch)</span>
+                <h2 style="margin: 0.15rem 0 0 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">📧 Resend Emergency Email Agent</h2>
+              </div>
+              <span style="background: #e0f2fe; color: #0369a1; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px;">Resend API</span>
+            </div>
+            
+            <p style="font-size: 0.78rem; color: #64748b; margin: 0 0 1rem 0; line-height: 1.4;">
+              Autonomously compiles emergency surgical allocation emails and transmits them directly to recipient hospitals.
+            </p>
+
+            <!-- Agent 2 Inputs -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.9rem; margin-bottom: 1rem; flex: 1;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 0.6rem; text-transform: uppercase;">Required Inputs / इनपुट:</div>
+              
+              <div style="margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
+                  <label style="font-size: 0.72rem; font-weight: 600; color: #475569;">Hospital Recipient Email (ईमेल)</label>
+                  <span style="font-size: 0.68rem; color: #0284c7;">Resend Sandbox</span>
+                </div>
+                <input type="email" id="resendInputEmail" value="kashwi0103@gmail.com" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                <div style="font-size: 0.68rem; color: #64748b; margin-top: 3px;">
+                  Delivers to verified developer address <code>kashwi0103@gmail.com</code> (or any verified custom domain).
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Hospital Name (अस्पताल)</label>
+                  <input type="text" id="resendInputHospital" value="AIIMS New Delhi Transplant OT" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Organ & Blood</label>
+                  <input type="text" id="resendInputOrgan" value="Kidney (O+)" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                </div>
+              </div>
+
+              <div>
+                <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Priority & Viability Mandate</label>
+                <input type="text" id="resendInputMandate" value="CRITICAL URGENT - Crossmatch verified. Green corridor requested." style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.78rem; box-sizing: border-box;" />
+              </div>
+            </div>
+
+            <button type="button" id="btnTestResend" style="width: 100%; background: #0284c7; color: #ffffff; padding: 0.6rem; border: none; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;" onclick="window.app && window.app.executeResendAgent()">
+              <span>📧 Send Emergency Resend Email</span>
+            </button>
+
+            <!-- Agent 2 Output Box -->
+            <div id="resendAgentOutput" style="display: none; margin-top: 0.9rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 0.85rem; font-size: 0.78rem; color: #0369a1;"></div>
+          </div>
+
+          <!-- AGENT 3: TELEGRAM ADMIN ALERT AGENT -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
+              <div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #2563eb; text-transform: uppercase;">Agent #3 (Admin Broadcast)</span>
+                <h2 style="margin: 0.15rem 0 0 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">📱 Telegram Bot Alert Agent</h2>
+              </div>
+              <a href="https://t.me/OrganVault_bot" target="_blank" rel="noreferrer" style="background: #dbeafe; color: #1d4ed8; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                <span>@OrganVault_bot</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+              </a>
+            </div>
+            
+            <p style="font-size: 0.78rem; color: #64748b; margin: 0 0 0.8rem 0; line-height: 1.4;">
+              Posts cryptographic allocation tokens, cold ischemia stats, and instant alerts to Telegram.
+            </p>
+
+            <!-- Agent 3 Inputs -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.9rem; margin-bottom: 1rem; flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: #334155; text-transform: uppercase;">Required Inputs / इनपुट:</span>
+                <button type="button" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 0.7rem; font-weight: 600; padding: 2px 6px; border-radius: 4px; cursor: pointer;" onclick="window.app && window.app.autoDetectTelegramChat()">
+                  ⚡ Auto-Detect Chat ID
+                </button>
+              </div>
+              
+              <div style="margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
+                  <label style="font-size: 0.72rem; font-weight: 600; color: #475569;">Target Telegram Chat ID (आईडी)</label>
+                  <span style="font-size: 0.68rem; color: #0284c7;">Active ID verified</span>
+                </div>
+                <input type="text" id="telegramInputChatId" value="6998121144" placeholder="Enter Chat ID or @channel" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                <div style="font-size: 0.68rem; color: #64748b; margin-top: 3px;">
+                  Open <a href="https://t.me/OrganVault_bot" target="_blank" rel="noreferrer" style="color: #2563eb; font-weight: 600; text-decoration: underline;">@OrganVault_bot</a> &amp; send <code>/start</code> to receive alerts.
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Donor Token ID</label>
+                  <input type="text" id="telegramInputToken" value="DNR-3535-NOTTO" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Viability Score</label>
+                  <input type="text" id="telegramInputScore" value="95% (HIGH_PRIORITY)" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; box-sizing: border-box;" />
+                </div>
+              </div>
+
+              <div>
+                <label style="display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 0.15rem;">Custom Alert Headline</label>
+                <input type="text" id="telegramInputHeadline" value="🚨 URGENT: Organ Allocation &amp; Green Corridor Activated" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.78rem; box-sizing: border-box;" />
+              </div>
+            </div>
+
+            <button type="button" id="btnTestTelegram" style="width: 100%; background: #2563eb; color: #ffffff; padding: 0.6rem; border: none; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;" onclick="window.app && window.app.executeTelegramAgent()">
+              <span>📱 Send Telegram Bot Alert</span>
+            </button>
+
+            <!-- Agent 3 Output Box -->
+            <div id="telegramAgentOutput" style="display: none; margin-top: 0.9rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 0.85rem; font-size: 0.78rem; color: #1e40af;"></div>
+          </div>
+
+        </div>
+
+        <!-- Architecture Flow Diagram -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.4rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <h2 style="font-size: 1rem; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 0.8rem;">
+            🔄 Autonomous Multi-Agent Pipeline Workflow (आर्किटेक्चर फ्लो)
+          </h2>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; background: #f8fafc; padding: 1rem; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 0.82rem;">
+            <div style="background: #ffffff; padding: 0.6rem 0.9rem; border-radius: 6px; border: 1px solid #cbd5e1; text-align: center; flex: 1; min-width: 140px;">
+              <strong>1. Donor Data Input</strong><br/>
+              <span style="font-size: 0.72rem; color: #64748b;">Age, Blood, Organ, CIT</span>
+            </div>
+            <div style="color: #003087; font-weight: bold; font-size: 1.2rem;">➔</div>
+            <div style="background: #ede9fe; padding: 0.6rem 0.9rem; border-radius: 6px; border: 1px solid #c4b5fd; text-align: center; flex: 1; min-width: 160px; color: #5b21b6;">
+              <strong>2. Mistral AI Agent</strong><br/>
+              <span style="font-size: 0.72rem;">Viability &amp; Risk Scoring</span>
+            </div>
+            <div style="color: #003087; font-weight: bold; font-size: 1.2rem;">➔</div>
+            <div style="background: #e0f2fe; padding: 0.6rem 0.9rem; border-radius: 6px; border: 1px solid #7dd3fc; text-align: center; flex: 1; min-width: 160px; color: #0369a1;">
+              <strong>3. Resend Email Tool</strong><br/>
+              <span style="font-size: 0.72rem;">Emergency Hospital Dispatch</span>
+            </div>
+            <div style="color: #003087; font-weight: bold; font-size: 1.2rem;">➔</div>
+            <div style="background: #dbeafe; padding: 0.6rem 0.9rem; border-radius: 6px; border: 1px solid #93c5fd; text-align: center; flex: 1; min-width: 160px; color: #1e40af;">
+              <strong>4. Telegram Bot Tool</strong><br/>
+              <span style="font-size: 0.72rem;">Real-time Admin Alerts</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           VIEW 10: ANOMALY SCANNER & 9-NODE BFT QUORUM
+           ══════════════════════════════════════════════ -->
+      <section id="view-anomaly-scanner" class="view-container hidden">
+        <!-- Banner Header with Live Diagnostics & Actions -->
+        <div class="panel-header-banner" style="background: linear-gradient(135deg, #072945 0%, #0B3D6B 60%, #0369a1 100%); color: #ffffff; padding: 1.5rem 2rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; box-shadow: 0 4px 14px rgba(7,41,69,0.25);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+              <span style="background: #e0f2fe; color: #0369a1; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; text-transform: uppercase;">Byzantine Fault Tolerance (BFT)</span>
+              <span id="anomalyBannerBadge" style="background: #10b981; color: #ffffff; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                <span class="live-dot" style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ffffff;"></span>
+                <span>QUORUM HEALTHY (9/9)</span>
+              </span>
+            </div>
+            <h1 style="margin: 0; font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem;">
+              <span>🛡️ Anomaly Scanner &amp; Quorum Integrity (अखंडता स्कैनर)</span>
+            </h1>
+            <p style="margin: 0.35rem 0 0 0; font-size: 0.85rem; opacity: 0.92; max-width: 720px;">
+              Audits 9-Node Distributed Authority Quorum, verifies cryptographic Merkle roots, detects unauthorized ledger tampering, and triggers self-healing BFT consensus restoration.
+            </p>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <button type="button" id="btnSimulateTamper" class="btn-cancel-modal" style="background: #fee2e2; border: 1px solid #f87171; color: #991b1b; padding: 0.6rem 1rem; font-weight: 700; font-size: 0.82rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 6px rgba(153,27,27,0.15);" onclick="window.app && window.app.simulateAnomalyTamper()">
+              <span>⚠️ Simulate Waitlist Tampering</span>
+            </button>
+            <button type="button" id="btnRestoreConsensus" class="btn-certify-match" style="background: #10b981; border: none; color: #ffffff; padding: 0.6rem 1.1rem; font-weight: 700; font-size: 0.82rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" onclick="window.app && window.app.restoreAnomalyConsensus()">
+              <span>🔄 Restore Consensus (Self-Healing)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Live Metric Stat Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;" id="anomalyMetricsGrid">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Active Tampering / Alert Warning Banner (Hidden unless anomaly detected) -->
+        <div id="anomalyAlertBanner" style="display: none; background: #fff1f2; border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #9f1239;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+            <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+              <span style="font-size: 1.5rem; line-height: 1;">🚨</span>
+              <div>
+                <div style="font-weight: 800; font-size: 0.92rem; color: #881337;">BYZANTINE FAULT DETECTED: UNAUTHORIZED QUEUE MUTATION</div>
+                <div style="font-size: 0.8rem; margin-top: 0.2rem; color: #9f1239; line-height: 1.4;">
+                  Block #108 candidate priority hash mismatch. 3 authority nodes (Western ROTTO, Eastern ROTTO, Southern SOTTO) rejected block signature due to state inconsistency.
+                </div>
+              </div>
+            </div>
+            <button type="button" style="background: #be123c; color: #ffffff; border: none; padding: 0.4rem 0.85rem; border-radius: 4px; font-size: 0.76rem; font-weight: 700; cursor: pointer; white-space: nowrap;" onclick="window.app && window.app.restoreAnomalyConsensus()">
+              Heal Ledger Now ⚡
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Two-Column Layout: Scanner Tabs on Left (70%), Scrollable History Sidebar on Right (30%) -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: start;" class="anomaly-split-layout">
+          
+          <!-- Left Column: Tabs & Main Views -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden;">
+            
+            <!-- Tab Navigation Header -->
+            <div style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f8fafc; padding: 0 0.5rem; flex-wrap: wrap;">
+              <button type="button" id="tabBtnAnomalyNodes" class="anomaly-tab-btn active" style="padding: 0.75rem 1rem; border: none; background: transparent; font-size: 0.82rem; font-weight: 700; color: #003087; border-bottom: 2px solid #003087; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;" onclick="window.app && window.app.setAnomalyTab('nodes')">
+                <span>🏛️ 9-Node Quorum Matrix</span>
+                <span id="tabCountNodes" style="background: #e0f2fe; color: #0369a1; font-size: 0.68rem; padding: 1px 6px; border-radius: 8px;">9 Nodes</span>
+              </button>
+              <button type="button" id="tabBtnAnomalyLedger" class="anomaly-tab-btn" style="padding: 0.75rem 1rem; border: none; background: transparent; font-size: 0.82rem; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;" onclick="window.app && window.app.setAnomalyTab('ledger')">
+                <span>⛓️ Block Integrity Audit</span>
+              </button>
+              <button type="button" id="tabBtnAnomalyTelemetry" class="anomaly-tab-btn" style="padding: 0.75rem 1rem; border: none; background: transparent; font-size: 0.82rem; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;" onclick="window.app && window.app.setAnomalyTab('telemetry')">
+                <span>📡 Cryptographic Telemetry Feed</span>
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+              </button>
+            </div>
+
+            <!-- Dynamic Tab Content Body -->
+            <div id="anomalyTabContent" style="padding: 1.25rem;">
+              <!-- Dynamically populated -->
+            </div>
+
+          </div>
+
+          <!-- Right Column: Scrollable History Sidebar (Last 5 Computed Block Hashes & Node Agreement Timestamps) -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column; max-height: 800px;">
+            
+            <div style="padding: 1rem 1.15rem; border-bottom: 1px solid #e2e8f0; background: #f8fafc; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="margin: 0; font-size: 0.92rem; font-weight: 700; color: #0f172a;">📜 Recent Block Hash History</h3>
+                <div style="font-size: 0.72rem; color: #64748b; margin-top: 1px;">Last 5 computed blocks &amp; node timestamps</div>
+              </div>
+              <span style="background: #e2e8f0; color: #334155; font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 10px;">5 BLOCKS</span>
+            </div>
+
+            <!-- Scrollable list of history items -->
+            <div id="anomalyHistoryListContainer" style="padding: 0.85rem; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Dynamically populated -->
+            </div>
+
+            <div style="padding: 0.75rem 1.15rem; border-top: 1px solid #e2e8f0; background: #f8fafc; font-size: 0.72rem; color: #64748b; text-align: center; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+              💡 Click any block to audit its 9-node agreement timestamps
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Statutory Governance Callout -->
+        <div class="gov-notice-callout" style="margin-top: 1rem;">
+          <strong>राष्ट्रीय अंग प्रत्यारोपण अधिनियम (THOA Section 5 &amp; NOTTO BFT Mandate):</strong> 
+          Under India's National Organ Allocation Framework, organ waitlists are protected by multi-authority cryptographic consensus across statutory bodies (Central Spine, AIIMS, ROTTO/SOTTO centers, DigiLocker, and ICMR Bioethics). No single hospital or administrative entity can alter patient queue rankings without triggering multi-sig verification refusal and automatic quarantine.
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           GOVERNMENT FOOTER (INSIDE MAIN SCROLLABLE AREA)
+           ══════════════════════════════════════════════ -->
+      <footer class="gov-footer" id="govFooter">
+        <div class="gov-footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 1.5rem;">
+          <div>
+            <div style="font-weight: 700; color: #FF9933; margin-bottom: 0.75rem; font-size: 0.9rem;">Statutory Framework</div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+              <li><a class="gov-footer-link" onclick="window.app && window.app.showToast('Terms & Conditions — Under THOA Statutory Framework', 'info')">Terms & Conditions</a></li>
+              <li><a class="gov-footer-link" onclick="window.app && window.app.showToast('Privacy Policy: Zero-Knowledge patient encryption enforced', 'info')">Privacy Policy / गोपनीयता नीति</a></li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #FF9933; margin-bottom: 0.75rem; font-size: 0.9rem;">Registry Governance</div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+              <li><a class="gov-footer-link" onclick="window.app && window.app.showToast('10 Donatable Organs Tracked Nationally', 'info')">9-Organ Mandate</a></li>
+              <li><a class="gov-footer-link" onclick="window.app && window.app.showToast('RTI / सूचना का अधिकार: Public Registry Records accessible under NOTTO Act', 'info')">RTI / सूचना का अधिकार</a></li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #FF9933; margin-bottom: 0.75rem; font-size: 0.9rem;">Accessibility & Maintenance</div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+              <li><a class="gov-footer-link" onclick="window.app && window.app.showToast('Accessibility: Built to WCAG 2.1 AA Standards', 'info')">Accessibility Statement</a></li>
+              <li>
+                <button type="button" class="footer-reset-btn" onclick="window.app && window.app.confirmResetDatabase()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 2px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.65-5.65"/></svg> Reset Database to Factory State
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="gov-footer-bottom" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div>© 2026 दूसरा जीवन पोर्टल | Doosra Jeevan Portal · Ministry of Health & Family Welfare, Govt. of India</div>
+          </div>
+          <div style="text-align: right;">
+            <div>87 Registered Candidates Across 10 Organ Queues | Last Updated: Live Sync</div>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">Content owned and maintained by NOTTO Apex Council</div>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       RESET DATABASE CONFIRMATION MODAL
+       ══════════════════════════════════════════════ -->
+  <div id="resetDbModal" class="hidden" role="dialog" aria-modal="true">
+    <div class="reset-modal-card">
+      <div class="reset-modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.5rem;">⚠️</span>
+          <div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">Reset National Organ Database</h3>
+            <span style="font-size: 0.75rem; color: #e11d48; font-weight: 600;">डेटाबेस रीसेट की पुष्टि करें</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="window.app && window.app.closeResetModal()">&times;</button>
+      </div>
+      <div class="reset-modal-body">
+        <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.75rem;">
+          Are you sure you want to reset the blockchain ledger and restore all <strong>87 patient profiles across the 9 donatable organ queues</strong> (Eyes, Heart, Liver, Kidney, Blood, Lungs, Pancreas, Skin, Bone Marrow) to their initial factory state?
+        </p>
+        <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; color: #9f1239; margin-bottom: 1rem;">
+          ✔ Restores full 87-patient queue across 9 organs<br>
+          ✔ Re-establishes genesis blockchain blocks<br>
+          ✔ Resets ZKP privacy vault & active allocations
+        </div>
+      </div>
+      <div class="reset-modal-footer">
+        <button type="button" class="btn-cancel-modal" onclick="window.app && window.app.closeResetModal()">
+          Cancel / रद्द करें
+        </button>
+        <button type="button" class="btn-confirm-reset" onclick="window.app && window.app.resetDatabase()">
+          Confirm Reset Database / रीसेट करें
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       FETCH OVERLAY ANIMATION (12-SECOND FULL-SCREEN MODAL)
+       ══════════════════════════════════════════════ -->
+  <div id="fetchOverlay" class="hidden" role="dialog" aria-modal="true">
+    <div class="fetch-modal-card">
+      <!-- Left: Network visualizer -->
+      <div class="fetch-network-visualizer">
+        <h4 style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+          Decentralized Node Consensus
+        </h4>
+        <canvas id="networkCanvas" width="280" height="280"></canvas>
+        <div class="network-status-text" id="networkStatusText">
+          Connecting to AIIMS Delhi node...
+        </div>
+      </div>
+
+      <!-- Right: Streaming Log Console -->
+      <div class="fetch-console-panel">
+        <div class="fetch-timer-wrap">
+          <span style="font-size: 0.82rem; font-weight: 700; color: #ffffff;">Streaming Ledger Ingestion (9-Organ Network)</span>
+          <span class="fetch-countdown-digits" id="fetchCountdownDigits">12s REMAINING</span>
+        </div>
+        <div class="fetch-progress-bar-wrap">
+          <div class="fetch-progress-bar" id="fetchProgressBar"></div>
+        </div>
+        <div class="fetch-terminal-logs" id="fetchTerminalLogs">
+          <!-- Real-time logs added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       LEGAL CLAUSES MODAL
+       ══════════════════════════════════════════════ -->
+  <div id="clausesModal" class="hidden" role="dialog" aria-modal="true">
+    <div class="clauses-modal-card">
+      <div class="clauses-header">
+        <div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: #003087;">NOTTO Organ Matching Legal & Ethical Clauses</h3>
+          <span style="font-family: var(--font-hindi); font-size: 0.8rem; color: #e65100;">कानूनी और नैतिक खंड (THOA Act 1994 & 9-Organ Protocol)</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnCloseClausesModal" onclick="window.app && window.app.closeClausesModal()">&times;</button>
+      </div>
+      <div class="clauses-body">
+        
+        <!-- Clause 1 -->
+        <div class="clause-card">
+          <div class="clause-title">Clause I: Identity Verification & Aadhaar Biometrics (THOA Section 9-1A)</div>
+          <div class="clause-en-text">
+            Mandatory biometric authentication of recipient and donor identities via UIDAI e-KYC to eliminate falsification or proxy registrations in organ registries.
+          </div>
+          <div class="clause-hi-box">
+            <span class="clause-hi-label">Hindi Explainer (layman language)</span>
+            अंग प्रत्यारोपण में किसी भी फर्जी पहचान या धोखाधड़ी को रोकने के लिए आधार बायोमेट्रिक पहचान अनिवार्य रूप से जांची जाती है।
+          </div>
+        </div>
+
+        <!-- Clause 2 -->
+        <div class="clause-card clause-purple">
+          <div class="clause-title">Clause II: Statutory Dual Family Consent (THOA Section 3)</div>
+          <div class="clause-en-text">
+            Every deceased or living organ allocation requires verified dual consent from authorized immediate next of kin, sealed cryptographically in the hospital ledger.
+          </div>
+          <div class="clause-hi-box">
+            <span class="clause-hi-label">Hindi Explainer (layman language)</span>
+            अंग दान से पहले परिवार के अधिकृत सदस्यों की लिखित सहमति आवश्यक है, जिसे ब्लॉकचेन पर डिजिटल रूप से सुरक्षित किया जाता है।
+          </div>
+        </div>
+
+        <!-- Clause 3 -->
+        <div class="clause-card clause-green">
+          <div class="clause-title">Clause III: Sequential Waitlist Priority & Automatic Queue Advancement</div>
+          <div class="clause-en-text">
+            Allotted donor organs must be accepted within a strict 5-hour window by the Rank 1 recipient. Once allocated, the next candidate automatically advances to Rank #1 for the next allocation cycle.
+          </div>
+          <div class="clause-hi-box">
+            <span class="clause-hi-label">Hindi Explainer (layman language)</span>
+            प्रतीक्षा सूची में रैंक 1 मरीज को अंग स्वीकार करने के लिए 5 घंटे का समय मिलता है। अंग स्वीकृत होने पर अगला मरीज स्वतः रैंक #1 पर आ जाता है।
+          </div>
+        </div>
+
+        <!-- Clause 4 -->
+        <div class="clause-card clause-orange">
+          <div class="clause-title">Clause IV: Post-Transplant Privacy & Zero-Knowledge Vault</div>
+          <div class="clause-en-text">
+            Upon surgery completion, patient biometric identifiers are permanently encrypted into zero-knowledge mathematical proofs to protect donor-recipient anonymity.
+          </div>
+          <div class="clause-hi-box">
+            <span class="clause-hi-label">Hindi Explainer (layman language)</span>
+            सफल प्रत्यारोपण के बाद मरीज का व्यक्तिगत डेटा हमेशा के लिए एन्क्रिप्ट कर दिया जाता है ताकि दाता और प्राप्तकर्ता की गोपनीयता बनी रहे।
+          </div>
+        </div>
+
+        <!-- Clause 5 -->
+        <div class="clause-card clause-red">
+          <div class="clause-title">Clause V: Universal Cashless Insurance Protocol</div>
+          <div class="clause-en-text">
+            Guarantees automated cashless clearance under Ayushman Bharat (PM-JAY) and approved insurance providers, prohibiting out-of-pocket delays during critical organ viability periods.
+          </div>
+          <div class="clause-hi-box">
+            <span class="clause-hi-label">Hindi Explainer (layman language)</span>
+            आयुष्मान भारत और बीमा योजनाओं के तहत अस्पताल में कैशलेस इलाज की गारंटी दी जाती है ताकि पैसों की कमी से किसी मरीज का ऑपरेशन न रुके।
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       NOTTO OFFICIAL DIGITAL SLIP (STATUTORY CERTIFICATE) MODAL
+       ══════════════════════════════════════════════ -->
+  <div id="nottoDigitalSlipModal" class="hidden" role="dialog" aria-modal="true">
+    <div class="digital-slip-modal-card">
+      <div class="slip-modal-header">
+        <div class="slip-header-badge">
+          <span>GOVERNMENT OF INDIA · NOTTO & THOA STATUTORY RECORD</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="window.app && window.app.closeNottoDigitalSlipModal()">&times;</button>
+      </div>
+      <div class="slip-modal-body" id="nottoDigitalSlipContent">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="slip-modal-footer">
+        <button type="button" class="btn-cancel-modal" onclick="window.app && window.app.closeNottoDigitalSlipModal()">
+          Close / बंद करें
+        </button>
+        <button type="button" class="btn-print-slip" onclick="window.app && window.app.printNottoDigitalSlip()">
+          🖨️ Print / Export NOTTO Digital Slip (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PATIENT CLINICAL DIAGNOSTIC DOCUMENT VIEWER MODAL
+       ══════════════════════════════════════════════ -->
+  <div id="patientDocModal" class="hidden" role="dialog" aria-modal="true">
+    <div class="patient-doc-modal-card">
+      <div class="doc-modal-header">
+        <div class="doc-header-brand">
+          <span class="doc-header-emblem">🏛️</span>
+          <div>
+            <div class="doc-header-title">NATIONAL HEALTH AUTHORITY · NOTTO CLINICAL RECORD</div>
+            <div class="doc-header-sub">SOTTO APEX HISTOCOMPATIBILITY & DIAGNOSTIC REPOSITORY</div>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="window.app && window.app.closePatientDocModal()">&times;</button>
+      </div>
+      <div class="doc-modal-body" id="patientDocModalContent">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="doc-modal-footer">
+        <button type="button" class="btn-cancel-modal" onclick="window.app && window.app.closePatientDocModal()">
+          Close / बंद करें
+        </button>
+        <button type="button" class="btn-copy-hash" id="btnCopyDocHash" onclick="window.app && window.app.copyActiveDocHash()">
+          📋 Copy SHA-256 Hash
+        </button>
+        <button type="button" class="btn-print-doc" onclick="window.app && window.app.printPatientDoc()">
+          🖨️ Print Clinical Document (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TOAST NOTIFICATION CONTAINER
+       ══════════════════════════════════════════════ -->
+  <div id="toastContainer" aria-live="polite"></div>
+
+  <!-- Load Data and App Scripts -->
+  <script src="/data.js"></script>
+  <script src="/app.js"></script>
+
+  <!-- CSV DATASET MANIPULATION MODAL -->
+  <div id="modalCsvDataset" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title-hi">डेटासेट आयात एवं हेरफेर (CSV Dataset Manager)</h3>
+          <div class="modal-title-en">Upload or Edit Hospital & Organ Registry CSV Dataset</div>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="window.app && window.app.closeCsvModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 0.82rem; color: #475569; margin-bottom: 1rem;">
+          You can paste new CSV rows or upload a CSV file with columns: <code>S.No, Hospital Name, Address, District, State, Type, Organs, Website</code>. The registry dashboard, state filters, price alerts, and hospital metrics will update automatically.
+        </p>
+
+        <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap;">
+          <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display: none;" onchange="window.app && window.app.handleCsvFileUpload(event)">
+          <button type="button" class="btn-certify-match" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;" onclick="document.getElementById('csvFileInput').click()">
+            📁 Choose CSV File to Upload
+          </button>
+          <button type="button" class="btn-cancel-modal" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;" onclick="window.app && window.app.loadSample100Hospitals()">
+            🔄 Reset to Standard 100 Hospitals
+          </button>
+        </div>
+
+        <div style="margin-bottom: 0.5rem; font-size: 0.78rem; font-weight: 700; color: #003087;">
+          CSV Dataset Text Content:
+        </div>
+        <textarea id="csvTextarea" style="width: 100%; height: 260px; font-family: var(--font-mono); font-size: 0.76rem; padding: 0.75rem; border: 1px solid var(--border-strong); border-radius: 6px; resize: vertical; line-height: 1.4; outline: none;"></textarea>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" class="btn-cancel-modal" onclick="window.app && window.app.closeCsvModal()">Cancel</button>
+        <button type="button" class="btn-certify-match" onclick="window.app && window.app.applyCsvDataFromTextarea()">Apply Dataset & Update Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RAW BLOCK PAYLOAD INSPECTOR MODAL -->
+  <div id="modalRawBlockPayload" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header" style="background: #0f172a; color: #ffffff; padding: 1.25rem 1.5rem; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #38bdf8;" id="modalRawBlockTitle">📦 Block #108 - Cryptographic Payload</h3>
+          <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Keccak-256 Merkle Leaf &amp; 9-Node Multi-Signature Stamp</div>
+        </div>
+        <button type="button" class="modal-close-btn" style="color: #cbd5e1; font-size: 1.2rem;" onclick="window.app && window.app.closeRawBlockModal()">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem; background: #0b1120;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">RAW ON-CHAIN STATE PAYLOAD (JSON):</span>
+          <button type="button" class="btn-copy-hash" id="btnCopyRawBlockJson" style="font-size: 0.72rem; padding: 3px 8px;" onclick="window.app && window.app.copyActiveRawBlockJson()">
+            📋 Copy JSON
+          </button>
+        </div>
+        <pre id="rawBlockJsonViewer" style="margin: 0; min-height: 280px; max-height: 420px; overflow-y: auto; color: #38bdf8; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.8rem; background: #030712; padding: 1rem; border: 1px solid #1e293b; border-radius: 6px; line-height: 1.45; white-space: pre-wrap; word-break: break-word;"></pre>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; background: #0f172a; border-top: 1px solid #1e293b;">
+        <span style="font-size: 0.72rem; color: #64748b;">Statutory Hash Validated across all 9 NOTTO Authority Spines</span>
+        <button type="button" class="btn-cancel-modal" style="background: #334155; color: #ffffff; border: none; padding: 0.45rem 1rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;" onclick="window.app && window.app.closeRawBlockModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "Doosra Jeevan",
+  "description": "Simulated blockchain-based national organ transplant registry prototype inspired by India's NOTTO, ROTTO, and SOTTO framework under THOA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
